@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import xml.parsers.expat
 import urllib
@@ -13,7 +14,7 @@ class YrCyclingWeather:
 	emptyForecastObject = {'windSpeed': 0, 'windDescription': '', 'windDirection': '', 'precipitation': 0, 'temperature': 0, 'description': ''}
 	currentFromDatetime = ""
 	currentForecastObject = ""
-	humanReadableDescription = "{0} {1} - {o[description]}. Wind: {o[windDescription]} {o[windSpeed]} {o[windDirection]}, Precipitation: {o[precipitation]}, Temp: {o[temperature]}"
+	humanReadableDescription = u"{0} {1} - {o[description]} {o[temperature]}°. Wind: {o[windDescription]} {o[windSpeed]} {o[windDirection]}. Rain: {o[precipitation]}"
 	
 	def __init__(self, yrForecastURL):
 		self.yrForecastURL = yrForecastURL
