@@ -14,7 +14,7 @@ class YrCyclingWeather:
 	emptyForecastObject = {'windSpeed': 0, 'windDescription': '', 'windDirection': '', 'precipitation': 0, 'temperature': 0, 'description': ''}
 	currentFromDatetime = ""
 	currentForecastObject = ""
-	humanReadableDescription = "{0} {1} - {o[description]} {o[temperature]}°. Wind: {o[windDescription]} {o[windSpeed]:.0f} {o[windDirection]}. Rain: {o[precipitation]}"
+	humanReadableDescription = "{0} {1} - {o[description]} {o[temperature]}°. {o[windDescription]} {o[windSpeed]:.0f} {o[windDirection]}. Rain: {o[precipitation]}"
 	
 	def __init__(self, yrForecastURL):
 		self.yrForecastURL = yrForecastURL
