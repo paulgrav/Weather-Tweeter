@@ -14,7 +14,7 @@ class YrCyclingWeather:
 	emptyForecastObject = {'windSpeed': 0, 'windDescription': '', 'windDirection': '', 'precipitation': 0, 'temperature': 0, 'description': ''}
 	currentFromDatetime = ""
 	currentForecastObject = ""
-	humanReadableDescription = "{0} {1} - {o[description]} {o[temperature]}°. {o[windDescription]} {o[windSpeed]:.0f} {o[windDirection]}. Rain: {o[precipitation]}"
+	humanReadableDescription = "{0} {1} - {o[description]} {o[temperature]}°. {o[windDescription]} {o[windSpeed]:.0f} {o[windDirection]}. Rain: {o[precipitation]:.1f}"
 	
 	def __init__(self, yrForecastURL):
 		self.yrForecastURL = yrForecastURL
@@ -34,9 +34,11 @@ class YrCyclingWeather:
 		p.Parse(forecastXML, 1)
 				
 		forecastStrings = []
+		dateKeys = self.forecastInfo.keys()
+		dateKeys.sort()
 		for n in range(0, 2):
-			(datetimeString, forecastObject) = self.forecastInfo.popitem()
-			dt = datetime.strptime(datetimeString, "%Y-%m-%dT%H:%M:%S")
+			dt = dateKeys[n]
+			forecastObject = self.forecastInfo[dt]
 			
 			now = datetime.now()
 			day = dt.strftime('%d/%m')
@@ -53,19 +55,19 @@ class YrCyclingWeather:
 				
 	def start_element(self, name, attrs):
 		if name == "time":	
-			self.currentFromDatetime = attrs['from']
+			self.currentFromDatetime = datetime.strptime(attrs['from'], "%Y-%m-%dT%H:%M:%S")
 			try:
-				if self.hoursOfInterest.index(datetime.strptime(self.currentFromDatetime, "%Y-%m-%dT%H:%M:%S").hour) != -1:
+				if self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
 					self.currentForecastObject = copy.copy(self.emptyForecastObject)
 				else:
-					self.currentForecastObject = ""
+					self.currentForecastObject = None
 			except ValueError:
 				pass
 
 			return
 			
 		try:
-			if self.hoursOfInterest.index(datetime.strptime(self.currentFromDatetime, "%Y-%m-%dT%H:%M:%S").hour) != -1:
+			if self.currentFromDatetime and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
 				if name == "symbol":
 					self.currentForecastObject['description'] = attrs['name']
 				if name == "windDirection":
@@ -79,10 +81,10 @@ class YrCyclingWeather:
 			pass
 
 	def end_element(self, name):
-		if name == "time" and self.currentForecastObject != "":
+		if name == "time" and self.currentForecastObject:
 			self.forecastInfo[self.currentFromDatetime] = self.currentForecastObject;
-			self.currentForecastObject = ""
-			self.currentFromDatetime = ""
+			self.currentForecastObject = None
+			self.currentFromDatetime = None
 		
 		
 yrForecast = YrCyclingWeather("http://www.yr.no/place/United_Kingdom/England/Pudsey~2639866/forecast_hour_by_hour.xml")
