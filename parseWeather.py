@@ -57,7 +57,7 @@ class YrCyclingWeather:
 		if name == "time":	
 			self.currentFromDatetime = datetime.strptime(attrs['from'], "%Y-%m-%dT%H:%M:%S")
 			try:
-				if self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
+				if type(self.currentFromDatetime) is datetime and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
 					self.currentForecastObject = copy.copy(self.emptyForecastObject)
 				else:
 					self.currentForecastObject = None
@@ -67,7 +67,7 @@ class YrCyclingWeather:
 			return
 			
 		try:
-			if self.currentFromDatetime and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
+			if type(self.currentFromDatetime) is datetime and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
 				if name == "symbol":
 					self.currentForecastObject['description'] = attrs['name']
 				if name == "windDirection":
