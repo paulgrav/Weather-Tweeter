@@ -84,7 +84,8 @@ class YrCyclingWeather:
                                                          "%Y-%m-%dT%H:%M:%S")
             try:
                 if type(self.currentFromDatetime) is datetime \
-                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
+                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1 \
+                 and self.currentFromDatetime > datetime.now():
                     self.currentForecastObject = copy.copy(self.emptyForecastObject)
                 else:
                     self.currentForecastObject = None
@@ -94,7 +95,8 @@ class YrCyclingWeather:
     def char_data(self, data):
         try:
             if type(self.currentFromDatetime) is datetime \
-                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1:
+                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1 \
+                 and self.currentFromDatetime > datetime.now():
 
                 if self.current_element == "FeelsLikeTemperature":
                     self.currentForecastObject['feelsLike'] = float(data)
