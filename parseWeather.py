@@ -72,6 +72,12 @@ class YrCyclingWeather:
 
         return "\n".join(forecastStrings)
 
+    def is_time_of_interest(self):
+        return type(self.currentFromDatetime) is datetime \
+                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1 \
+                 and self.currentFromDatetime > datetime.now()
+
+
     def start_element(self, name, attrs):
         self.current_element = name
 
@@ -83,9 +89,7 @@ class YrCyclingWeather:
             self.currentFromDatetime = datetime.strptime(time,
                                                          "%Y-%m-%dT%H:%M:%S")
             try:
-                if type(self.currentFromDatetime) is datetime \
-                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1 \
-                 and self.currentFromDatetime > datetime.now():
+                if self.is_time_of_interest():
                     self.currentForecastObject = copy.copy(self.emptyForecastObject)
                 else:
                     self.currentForecastObject = None
@@ -94,10 +98,7 @@ class YrCyclingWeather:
 
     def char_data(self, data):
         try:
-            if type(self.currentFromDatetime) is datetime \
-                 and self.hoursOfInterest.index(self.currentFromDatetime.hour) != -1 \
-                 and self.currentFromDatetime > datetime.now():
-
+            if self.is_time_of_interest():
                 if self.current_element == "FeelsLikeTemperature":
                     self.currentForecastObject['feelsLike'] = float(data)
 
